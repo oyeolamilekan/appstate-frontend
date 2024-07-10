@@ -1,0 +1,1 @@
+export const DEBUG = process.env.ENVIRONMENT === "development";
