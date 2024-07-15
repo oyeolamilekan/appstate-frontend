@@ -10,13 +10,13 @@ type SuspencePropType = {
     isError: boolean,
 }
 
-export default function CustomSupense({
+export const CustomSupense = ({
     children,
     fallBackEmpty,
     isLoading,
     isEmpty,
     isError
-}: SuspencePropType) {
+}: SuspencePropType) => {
     if (isError)
         return <div className="text-center p-5">Something bad happended, kindly reach out to support.</div>
     else if (isLoading)

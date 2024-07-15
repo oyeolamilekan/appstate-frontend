@@ -1,14 +1,14 @@
 "use client"
 
-import CustomSupense from '@/components/ui/custom-suspense'
-import { CURRENT_STORE } from '@/config/app'
-import { fetchProduct } from '@/endpoints/products'
-import { useSessionStorage } from '@/hooks'
-import { useQuery } from '@tanstack/react-query'
-import { BoxIcon } from 'lucide-react'
-import React from 'react'
+import { deleteProduct, fetchProduct } from '@/endpoints/products'
+import { useRouter } from 'next/navigation'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { Pencil, Trash2 } from 'lucide-react'
+import React, { useReducer } from 'react'
 import Image from 'next/image';
-import { Button } from '@/components/ui'
+import { Button, CustomSupense, Modal } from '@/components/ui'
+import { Gallery } from '@/components/ui/gallery'
+import { toast } from 'sonner'
 
 
 type Props = {
@@ -19,7 +19,15 @@ type Props = {
 
 const Page = ({ params: { slug } }: Props) => {
 
-  const { value } = useSessionStorage<{ name: string, public_id: string, slug: string }>(CURRENT_STORE);
+  const initState = { deleteProductModal: false }
+
+  const [modals, updateModals] = useReducer((prev: typeof initState, next: Partial<typeof initState>): typeof initState => {
+    return { ...prev, ...next }
+  }, initState)
+
+  const toggleDeleteProductModal = () => updateModals({ deleteProductModal: !modals.deleteProductModal })
+
+  const router = useRouter()
 
   const { isLoading, isError, data } = useQuery({
     queryKey: ["product", slug],
@@ -27,6 +35,18 @@ const Page = ({ params: { slug } }: Props) => {
     enabled: slug != null,
     retry: false,
   });
+
+  const { isPending, mutate } = useMutation({
+    mutationFn: () => deleteProduct(slug),
+    async onSuccess() {
+      toast.success("Successfully deleted product.")
+      router.push('/dashboard/products')
+    },
+    onError(err: any) {
+      const { message } = err.response?.data;
+      toast.error(message);
+    },
+  })
 
   return (
     <div>
@@ -45,11 +65,22 @@ const Page = ({ params: { slug } }: Props) => {
         </div>
         <h1 className="text-3xl font-semibold mb-5">{data?.data?.name}</h1>
         <div className="flex space-x-2 mb-4">
-          <Button className="h-9" variant={"danger"}>Delete</Button>
-          <Button className="h-9">Edit</Button>
+          <Button className="h-9" variant={"danger"} onClick={toggleDeleteProductModal} loading={isPending}><Trash2 height={17} /> Delete</Button>
+          <Button className="h-9"><Pencil height={17} /> Edit</Button>
         </div>
         <p>{data?.data?.description}</p>
+        <h5 className="font-semibold text-xl my-5">Screenshots {data?.data?.gallery_imaages.length}</h5>
+        <Gallery images={data?.data?.gallery_imaages ?? []} />
       </CustomSupense>
+      <Modal isShown={modals.deleteProductModal} onClose={toggleDeleteProductModal}>
+        <>
+          <p className='text-center'>Are you sure you want to delete this product?</p>
+          <div className='flex flex-col md:flex-row md:space-x-4 md:space-y-0 space-y-2 mt-10'>
+            <Button onClick={() => mutate()} loading={isPending} size={'full'}>Yes</Button>
+            <Button variant='outline' onClick={toggleDeleteProductModal} size={'full'}>No, take me back.</Button>
+          </div>
+        </>
+      </Modal>
     </div>
   )
 }

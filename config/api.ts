@@ -1,12 +1,8 @@
 import axios from "axios";
-import { DEBUG } from "./feature-flags";
 import { deleteCookie, getCookie } from "cookies-next";
 import { redirect } from "next/navigation";
-
-const PRODAPIURL = 'https://openapp.up.railway.app/api/v1/';
-const TESTAPIURL = 'http://localhost:8000/api/v1/'
-
-const APIURL = true ? TESTAPIURL : PRODAPIURL
+import { clearSessionStorage } from "@/hooks";
+import { BASE_URL } from "./url";
 
 
 const getToken = () => {
@@ -15,7 +11,7 @@ const getToken = () => {
 };
 
 const axiosInstance = axios.create({
-    baseURL: APIURL,
+    baseURL: BASE_URL,
     timeout: 10000
 });
 
@@ -36,6 +32,7 @@ axiosInstance.interceptors.response.use(
     (error) => {
         if (error.response?.status === 401) {
             deleteCookie("token")
+            clearSessionStorage()
             redirect("/auth/login")
         }
         return Promise.reject(error);

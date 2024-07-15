@@ -1,24 +1,26 @@
 "use client";
 
-import { Button, Form, Input, Modal } from "@/components/ui";
+import { Button, FileUploadButton, Form, Input, Modal } from "@/components/ui";
 import CustomSupense from "@/components/ui/custom-suspense";
 import { CURRENT_STORE } from "@/config/app";
 import { createStore, fetchStores } from "@/endpoints/stores";
 import { useSessionStorage } from "@/hooks";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BoxIcon } from "lucide-react";
-import React, { useReducer } from "react";
+import React, { useReducer, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { TextArea } from "@/components/ui/textarea";
 import { redirectUrl } from "@/lib";
-
+import ImagePreview from "@/components/ui/image-preview";
 
 export default function Stores() {
   const { updateValue } = useSessionStorage(CURRENT_STORE);
 
   const queryClient = useQueryClient();
-  
+
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -60,7 +62,12 @@ export default function Stores() {
 
   const onSubmit = async (data: FieldValues) => {
     const { name, description } = data;
-    mutate({ name, description });
+    const form = new FormData();
+    form.append('name', name);
+    form.append('description', description);
+    if (!selectedFile) return toast.error("Store thumbnail is required");
+    if (selectedFile) form.append('file', selectedFile);
+    mutate({ formData: form });
   };
 
   const toggleStoreModal = () =>
@@ -69,6 +76,16 @@ export default function Stores() {
   const addCurrentStore = (data: any) => {
     updateValue(data)
     redirectUrl("/dashboard/home")
+  }
+
+  const handleFileSelect = (files: FileList | null) => {
+    if (files && files.length > 0) {
+      setSelectedFile(files[0]);
+    }
+  };
+
+  const removeThumbnail = () => {
+    setSelectedFile(null)
   }
 
   return (
@@ -104,7 +121,6 @@ export default function Stores() {
           size={"full"}
           className="mt-2"
           onClick={toggleStoreModal}
-          loading={isPending}
         >
           Create Store
         </Button>
@@ -116,6 +132,7 @@ export default function Stores() {
       >
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Input
+            label="Name"
             placeHolder="Store name"
             type="text"
             name="name"
@@ -130,6 +147,7 @@ export default function Stores() {
             }}
           />
           <TextArea
+            label="Description"
             placeHolder="Store Description"
             name="description"
             register={register}
@@ -142,7 +160,19 @@ export default function Stores() {
               },
             }}
           />
-          <Button size={"full"} variant={"dark"}>
+          <ImagePreview file={selectedFile} onRemove={removeThumbnail} />
+          <FileUploadButton
+            onFileSelect={handleFileSelect}
+            accept=".jpg,.png,.pdf"
+            multiple
+            variant="outline"
+            size="small"
+          >
+            {selectedFile?.name ?? "Add Store thumbnail"}
+          </FileUploadButton>
+          <br />
+          <br />
+          <Button size={"full"} variant={"dark"} loading={isPending}>
             Create
           </Button>
         </Form>

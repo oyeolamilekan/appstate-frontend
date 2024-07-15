@@ -23,7 +23,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ file, onRemove }) => {
   }, [file]);
 
   if (!previewUrl) {
-    return <p className="text-gray-500">No image selected</p>;
+    return <p className="text-gray-500 mb-2">No image selected</p>;
   }
 
   return (

@@ -5,6 +5,16 @@ export const createProduct = async ({ slug, formData }: { slug: string, formData
   return data;
 }
 
+export const deleteProduct = async (storeSlug: string) => {
+  const { data } = await axiosInstance.delete(`products/delete_product/${storeSlug}`);
+  return data;
+}
+
+export const createPaymentLink = async (productSlug: string) => {
+  const { data } = await axiosInstance.post(`products/create_payment_link/${productSlug}`);
+  return data;
+}
+
 export const fetchProducts = async (storeSlug: string, page = 1) => {
   const { data } = await axiosInstance.get(`products/fetch_products/${storeSlug}?page=${page}`);
   return data;

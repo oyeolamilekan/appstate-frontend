@@ -65,15 +65,60 @@ export const validateGitHubRepoUrl = (url: string) => {
   return githubRepoPattern.test(url) || "Please enter a valid GitHub repository URL";
 };
 
-export const formatPrice = (
-  num: number,
-  currency: string = 'USD',
-  locale: string = 'en-US'
-): string => {
-  return new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency: currency,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(num);
+
+export const formatPrice = (value: string) => {
+  // Remove non-numeric characters
+  const [wholePart, _] = value.toString().split('.');
+  const numericValue = wholePart.replace(/[^\d]/g, '');
+  // Add thousand separators
+  return numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+
+
+export const getSubdomainUrl = (slug: string): string => {
+  // Get the current hostname
+  const hostname = window.location.hostname;
+  
+  // Check if we're in a development environment
+  const isDevelopment = process.env.NODE_ENV === 'development';
+  
+  // Define the base domain
+  const baseDomain = isDevelopment ? 'localhost:3000' : process.env.NEXT_PUBLIC_BASE_DOMAIN;
+  
+  // Remove the base domain from the hostname to get the current subdomain (if any)
+  const currentSubdomain = hostname.replace(`.${baseDomain}`, '');
+  
+  // If we're already on a subdomain or in development, construct the URL differently
+  if (currentSubdomain !== hostname || isDevelopment) {
+    return `${window.location.protocol}//${slug}.${baseDomain}`;
+  }
+  
+  // For production on the main domain
+  return `${window.location.protocol}//${slug}.${hostname}`;
+}
+
+export function getSubdomain(hostname: string | null): string | null {
+  if (!hostname) return null;
+
+  // Check if we're in a development environment
+  const isDevelopment = process.env.NODE_ENV === 'development';
+  
+  // Define the base domain
+  const baseDomain = isDevelopment ? 'localhost:3000' : process.env.NEXT_PUBLIC_BASE_DOMAIN;
+
+  if (!baseDomain) {
+    console.error('Base domain is not defined');
+    return null;
+  }
+
+  // Remove the base domain from the hostname
+  const subdomain = hostname.replace(`.${baseDomain}`, '');
+
+  // If the subdomain is the same as the hostname, it means we're on the root domain
+  return subdomain === hostname ? null : subdomain;
+}
+
+export const removeCommasAndConvertToNumber = (numberString: string): string => {
+  return numberString.replace(/,/g, "");
 };

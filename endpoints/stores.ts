@@ -5,8 +5,8 @@ export const fetchStores = async () => {
   return data;
 }
 
-export const createStore = async (body: Object) => {
-  const { data } = await axiosInstance.post('/stores/create_store', body);
+export const createStore = async ({ formData }: { formData: FormData }) => {
+  const { data } = await axiosInstance.post('/stores/create_store', formData);
   return data;
 }
 

@@ -10,7 +10,7 @@ import { CURRENT_STORE } from '@/config/app'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { createProduct } from '@/endpoints/products'
-import { validateGitHubRepoUrl } from '@/lib'
+import { formatPrice, removeCommasAndConvertToNumber, validateGitHubRepoUrl } from '@/lib'
 import { useRouter } from 'next/navigation'
 import ImagePreview from '@/components/ui/image-preview'
 
@@ -32,7 +32,9 @@ export default function Page() {
     form.append('name', name);
     form.append('description', description);
     form.append('repo_link', repo_link);
-    form.append('price', price);
+    form.append('price', removeCommasAndConvertToNumber(price));
+    if (!selectedFile) return toast.error("Product thumbnail is required.");
+    if (selectedGalaryFile.length <= 0) return toast.error("Please upload atleast on image gallery.");
     if (selectedGalaryFile) selectedGalaryFile.forEach((file: File, index: number) => form.append(`files[${index}]`, file))
     if (selectedFile) form.append('file', selectedFile)
     mutate({ slug: value?.slug as string, formData: form });
@@ -93,10 +95,13 @@ export default function Page() {
         <Input
           label='Price'
           placeHolder="Price of your software"
-          type="number"
+          type="text"
           name="price"
           register={register}
           errors={errors}
+          onChange={(e) => {
+            e.target.value = formatPrice(e.target.value)
+          }}
           validationSchema={{
             required: "Price is required",
             min: { value: 0, message: "Price must be positive" },

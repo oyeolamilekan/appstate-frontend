@@ -1,6 +1,6 @@
 "use client"
 
-import { Input, Form, Modal, Button, DeveloperSideBar } from '@/components/ui'
+import { Input, Form, Modal, Button } from '@/components/ui'
 import React, { useMemo, useReducer, useRef } from 'react'
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createIntegration, deleteIntegration, fetchIntegrations } from '@/endpoints/integrations';
@@ -157,7 +157,7 @@ export default function Integrations() {
               required: "Webhook Key Secret is required"
             }}
           />}
-          <Button className='w-full' variant={'dark'} loading={isPending} disabled={isPending}>
+          <Button className='w-full my-2' variant={'dark'} loading={isPending} disabled={isPending}>
             Add Integration
           </Button>
         </Form>

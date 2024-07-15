@@ -1,10 +1,26 @@
 import { useState } from "react";
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from 'tailwind-merge';
 import { FieldErrors, RegisterOptions, UseFormRegister } from "react-hook-form";
 import { EyeIcon, EyeOff } from "lucide-react";
 
-export function Input({ onChange = () => { }, value, name, placeHolder, type, maxLength, disabled = false, required = true, className = '', validationSchema, register, errors, label, ...props }: InputPropTypes) {
-    const [isVisible, setVisible] = useState(false)
+export function Input({
+    onChange = () => { },
+    value,
+    name,
+    placeHolder,
+    type,
+    maxLength,
+    disabled = false,
+    required = true,
+    className = '',
+    validationSchema,
+    register,
+    errors,
+    label,
+    ...props
+}: InputPropTypes) {
+    const [isVisible, setVisible] = useState(false);
+
     return (
         <>
             {label && (
@@ -13,18 +29,34 @@ export function Input({ onChange = () => { }, value, name, placeHolder, type, ma
                 </label>
             )}
             <div className={twMerge(`relative ${className} my-3`)}>
-                {type === 'password'
-                    ?
-                    isVisible ? <span onClick={() => setVisible(false)}><EyeIcon className="absolute inset-y-0 right-0 flex items-center cursor-pointer my-2 mr-3" /></span> : <span onClick={() => setVisible(true)}><EyeOff className="absolute inset-y-0 right-0 flex items-center cursor-pointer my-2 mr-3"/></span> : null}
+                {type === 'password' &&
+                    (isVisible ? (
+                        <span onClick={() => setVisible(false)}>
+                            <EyeIcon className="absolute inset-y-0 right-0 flex items-center cursor-pointer my-2 mr-3" />
+                        </span>
+                    ) : (
+                        <span onClick={() => setVisible(true)}>
+                            <EyeOff className="absolute inset-y-0 right-0 flex items-center cursor-pointer my-2 mr-3" />
+                        </span>
+                    ))}
                 <input
-                    className="outline-none h-10 flex items-center pl-2 lg:pl-4 border-[0.1px] rounded text-base font-normal w-full focus:ring-neutral-800 focus:border-black dark:focus:ring-white dark:focus:border-white focus:border-[0.2px] bg-transparent border-opacity-20"
+                    className={twMerge(
+                        "w-full px-2 lg:px-4 py-2 text-base font-normal rounded border border-opacity-20 bg-transparent resize-none outline-none",
+                        "focus:ring-1 focus:ring-neutral-800 focus:border-black dark:focus:ring-white dark:focus:border-white",
+                        disabled && "opacity-50 cursor-not-allowed"
+                    )}
                     placeholder={placeHolder}
                     value={value}
                     disabled={disabled}
                     required={required}
                     type={!isVisible ? type : 'text'}
                     maxLength={Number(maxLength) || 524288}
-                    {...register(name, validationSchema)}
+                    {...register(name, {
+                        ...validationSchema,
+                        onChange: (e) => {
+                            onChange(e);
+                        }
+                    })}
                     {...props}
                 />
                 {errors[name] && (
@@ -32,7 +64,7 @@ export function Input({ onChange = () => { }, value, name, placeHolder, type, ma
                 )}
             </div>
         </>
-    )
+    );
 }
 
 type InputPropTypes = {
@@ -47,6 +79,6 @@ type InputPropTypes = {
     register: UseFormRegister<any>;
     errors: FieldErrors;
     validationSchema?: RegisterOptions;
-    customDivClass?: string,
+    customDivClass?: string;
     onChange?: Function;
 } & React.ComponentProps<'input'>;
