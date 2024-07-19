@@ -6,9 +6,7 @@ export async function middleware(req: NextRequest) {
     const hostname = req.headers.get("host");
 
     // Define the base domain
-    const baseDomain = process.env.NODE_ENV === "production" 
-        ? process.env.BASE_DOMAIN 
-        : "localhost:3000";
+    const baseDomain = process.env.BASE_DOMAIN;
 
     // Extract the subdomain
     const currentHost = hostname?.replace(`.${baseDomain}`, "");
