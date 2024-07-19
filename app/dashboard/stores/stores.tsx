@@ -1,7 +1,6 @@
 "use client";
 
-import { Button, FileUploadButton, Form, Input, Modal } from "@/components/ui";
-import CustomSupense from "@/components/ui/custom-suspense";
+import { Button, CustomSupense, FileUploadButton, Form, Input, Modal } from "@/components/ui";
 import { CURRENT_STORE } from "@/config/app";
 import { createStore, fetchStores } from "@/endpoints/stores";
 import { useSessionStorage } from "@/hooks";

@@ -78,91 +78,93 @@ export default function Page() {
   };
 
   return (
-    <div className="max-w-[30rem]">
-      <h3 className="font-semibold text-2xl mb-4 dark:text-white">Create Product</h3>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Input
-          label='Name'
-          placeHolder="Name of your software"
-          type="text"
-          name="name"
-          register={register}
-          errors={errors}
-          validationSchema={{
-            required: "Email is required",
-          }}
-        />
-        <Input
-          label='Price'
-          placeHolder="Price of your software"
-          type="text"
-          name="price"
-          register={register}
-          errors={errors}
-          onChange={(e) => {
-            e.target.value = formatPrice(e.target.value)
-          }}
-          validationSchema={{
-            required: "Price is required",
-            min: { value: 0, message: "Price must be positive" },
-          }}
-        />
-        <Input
-          label='Repo'
-          placeHolder="Github of your software"
-          type="text"
-          name="repo_link"
-          register={register}
-          errors={errors}
-          validationSchema={{
-            required: "Repo Link is required",
-            validate: validateGitHubRepoUrl
-          }}
-        />
-        <TextArea
-          label='Description'
-          placeHolder="Description of your software"
-          name="description"
-          register={register}
-          errors={errors}
-          validationSchema={{
-            required: "Description is required",
-          }}
-        />
-        <ImagePreview file={selectedFile} onRemove={removeThumbnail} />
-        <FileUploadButton
-          onFileSelect={handleFileSelect}
-          accept=".jpg,.png,.pdf"
-          multiple
-          variant="outline"
-          size="small"
-        >
-          {selectedFile?.name ?? "Add Product thumbnail"}
-        </FileUploadButton>
-        <br />
-        <div className="flex flex-wrap gap-4">
-          {selectedGalaryFile.map((file, index) => (
-            <ImagePreview
-              key={`${file.name}-${index}`}
-              file={file}
-              onRemove={() => removeGalleryFile(file)}
-            />
-          ))}
-        </div>
-        <br />
-        <FileUploadButton
-          onFileSelect={handleSelectMultipleFiles}
-          accept=".jpg,.png,.pdf"
-          multiple
-          variant="outline"
-          size="small"
-        >
-          {selectedGalaryFile.length <= 0 ? "Add Product Gallery" : `${selectedGalaryFile.length} selected image`}
-        </FileUploadButton>
-        <br />
-        <br />
-        <Button loading={isPending} size={'full'}>Create</Button>
-      </form>
+    <div className='overflow-y-auto h-screen'>
+      <div className="max-w-[30rem]">
+        <h3 className="font-semibold text-2xl mb-4 dark:text-white">Create Product</h3>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Input
+            label='Name'
+            placeHolder="Name of your software"
+            type="text"
+            name="name"
+            register={register}
+            errors={errors}
+            validationSchema={{
+              required: "Email is required",
+            }}
+          />
+          <Input
+            label='Price'
+            placeHolder="Price of your software"
+            type="text"
+            name="price"
+            register={register}
+            errors={errors}
+            onChange={(e) => {
+              e.target.value = formatPrice(e.target.value)
+            }}
+            validationSchema={{
+              required: "Price is required",
+              min: { value: 0, message: "Price must be positive" },
+            }}
+          />
+          <Input
+            label='Repo'
+            placeHolder="Github of your software"
+            type="text"
+            name="repo_link"
+            register={register}
+            errors={errors}
+            validationSchema={{
+              required: "Repo Link is required",
+              validate: validateGitHubRepoUrl
+            }}
+          />
+          <TextArea
+            label='Description'
+            placeHolder="Description of your software"
+            name="description"
+            register={register}
+            errors={errors}
+            validationSchema={{
+              required: "Description is required",
+            }}
+          />
+          <ImagePreview file={selectedFile} onRemove={removeThumbnail} />
+          <FileUploadButton
+            onFileSelect={handleFileSelect}
+            accept=".jpg,.png,.pdf"
+            multiple
+            variant="outline"
+            size="small"
+          >
+            {selectedFile?.name ?? "Add Product thumbnail"}
+          </FileUploadButton>
+          <br />
+          <div className="flex flex-wrap gap-4">
+            {selectedGalaryFile.map((file, index) => (
+              <ImagePreview
+                key={`${file.name}-${index}`}
+                file={file}
+                onRemove={() => removeGalleryFile(file)}
+              />
+            ))}
+          </div>
+          <br />
+          <FileUploadButton
+            onFileSelect={handleSelectMultipleFiles}
+            accept=".jpg,.png,.pdf"
+            multiple
+            variant="outline"
+            size="small"
+          >
+            {selectedGalaryFile.length <= 0 ? "Add Product Gallery" : `${selectedGalaryFile.length} selected image`}
+          </FileUploadButton>
+          <br />
+          <br />
+          <Button loading={isPending} size={'full'}>Create</Button>
+        </form>
+      </div>
     </div>
   )
 }
