@@ -11,15 +11,7 @@ export async function middleware(req: NextRequest) {
         : "localhost:3000";
 
     // Extract the subdomain
-    let currentHost;
-    if (process.env.NODE_ENV === "production") {
-      // Production logic remains the same
-      const baseDomain = process.env.BASE_DOMAIN;
-      currentHost = hostname?.replace(`.${baseDomain}`, "");
-    } else {
-      // Updated development logic
-      currentHost = hostname?.split(":")[0].replace(".localhost", "");
-    }
+    const currentHost = hostname?.replace(`.${baseDomain}`, "");
 
     // Check if the request is for a static file or API route
     if (pathname.match(/^\/(_next|api|static)/)) {
