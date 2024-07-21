@@ -1,9 +1,9 @@
+import { StoreFrontNavbar } from "@/components/ui/navbar";
 import { BASE_URL } from "@/config/url";
 import { getSubdomain } from "@/lib";
 import { Metadata } from "next";
 import { headers } from "next/headers";
-import Link from "next/link";
-import Image from 'next/image';
+
 
 interface StoreData {
   name: string;
@@ -72,27 +72,11 @@ export default async function DefaultLayout({
   const headersList = headers();
   const hostname = headersList.get('host') || '';
   const subdomain = getSubdomain(hostname);
-  const pageData = await fetchSeoData(subdomain as string);
 
   return (
     <html lang="en">
       <body>
-        <header className="p-4 border-b dark:border-gray-800">
-          <div className="flex justify-between">
-            <Link href="/" className="flex space-x-2 items-center">
-              {pageData?.logo_url && (
-                <Image
-                  src={pageData.logo_url}
-                  alt={`${pageData.name} logo`}
-                  width={20}
-                  height={20}
-                  className="cursor-pointer rounded-full"
-                />
-              )}
-              <span className="font-semibold">{pageData?.name || 'Default Name'}</span>
-            </Link>
-          </div>
-        </header>
+        <StoreFrontNavbar subdomain={subdomain} />
         <main>{children}</main>
       </body>
     </html>
