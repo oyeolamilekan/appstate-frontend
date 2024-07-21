@@ -60,9 +60,15 @@ export async function middleware(req: NextRequest) {
             console.log("Constructed subdomain URL:", newUrl.toString());
         }
 
-        const rewrite = NextResponse.rewrite(newUrl);
-        console.log("Rewrite URL:", newUrl.toString());
-        return handleAuthAndDashboard(req, rewrite);
+        if (hostname === mainDomain) {
+            // If it's the main domain, don't rewrite
+            return handleAuthAndDashboard(req);
+        } else {
+            // Only rewrite for subdomains
+            const rewrite = NextResponse.rewrite(newUrl);
+            console.log("Rewrite URL:", newUrl.toString());
+            return handleAuthAndDashboard(req, rewrite);
+        }
     } catch (error) {
         console.error("Error in middleware:", error);
         return NextResponse.next();
