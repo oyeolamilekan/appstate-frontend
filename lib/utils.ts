@@ -105,7 +105,7 @@ export function getSubdomain(hostname: string | null): string | null {
   const isDevelopment = process.env.NODE_ENV === 'development';
   
   // Define the base domain
-  const baseDomain = isDevelopment ? 'localhost:3000' : process.env.NEXT_PUBLIC_BASE_DOMAIN;
+  const baseDomain = isDevelopment ? 'localhost:3000' : process.env.BASE_DOMAIN;
 
   if (!baseDomain) {
     console.error('Base domain is not defined');
