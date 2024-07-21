@@ -1,49 +1,49 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function middleware(req: NextRequest) {
+    console.log("ENTERED");
+
     const url = req.nextUrl;
     const pathname = url.pathname;
-    const hostname = req.headers.get("host");
-
-    // Define the base domain
-    const baseDomain = process.env.NODE_ENV === "production" 
-        ? process.env.BASE_DOMAIN 
-        : "localhost:3000";
-
-    // Extract the subdomain
-    const currentHost = hostname?.replace(`.${baseDomain}`, "");
-
+    const hostname = req.headers.get("host") || "";
+  
+    console.log("Request URL:", req.url);
+    console.log("Pathname:", pathname);
+    console.log("Hostname:", hostname);
+  
+    const baseDomain = process.env.BASE_DOMAIN || "appstate.co";
+  
+    let subdomain;
+    if (hostname.endsWith(baseDomain)) {
+      subdomain = hostname.replace(`.${baseDomain}`, "");
+    } else {
+      // For non-production environments or if the hostname doesn't match the base domain
+      subdomain = hostname.split(":")[0].replace(".localhost", "");
+    }
+  
+    console.log("Subdomain:", subdomain);
+  
+    // If there's no subdomain, likely accessing the root domain, handle accordingly
+    if (!subdomain || subdomain === "www") {
+      console.log("No subdomain detected or www, serving root content");
+      return NextResponse.next();
+    }
+  
     // Check if the request is for a static file or API route
     if (pathname.match(/^\/(_next|api|static)/)) {
-        return NextResponse.next();
+      console.log("Static or API route detected, passing through");
+      return NextResponse.next();
     }
-
-    // Check for [domain]/[slug]/.page route
-    const pageRouteMatch = pathname.match(/^\/([^/]+)\/([^/]+)\/\.page/);
-    if (pageRouteMatch) {
-        const [, domain, slug] = pageRouteMatch;
-        // Handle the [domain]/[slug]/.page route
-        return NextResponse.rewrite(new URL(`/${domain}/${slug}`, req.url));
+  
+    // If the pathname already starts with the subdomain, don't rewrite
+    if (pathname.startsWith(`/${subdomain}`)) {
+      console.log("Path already contains subdomain, passing through");
+      return NextResponse.next();
     }
-
-    // If there's no currentHost or it's the base domain, continue
-    if (!currentHost || hostname === baseDomain) {
-        return handleAuthAndDashboard(req);
-    }
-
-    // Derive tenant-specific data based on subdomain
-    const siteId = currentHost;
-    const mainDomain = `${currentHost}.customdomain.com`;
-
-    let newUrl: URL;
-    if (hostname === mainDomain) {
-        // If accessing through the main domain, keep the current URL
-        newUrl = new URL(req.url);
-    } else {
-        // If accessing through a subdomain, rewrite to the subdomain path
-        newUrl = new URL(`${url.protocol}//${baseDomain}`);
-        newUrl.pathname = `/${siteId}${pathname}`;
-    }
+  
+    // Rewrite the URL to include the subdomain in the path
+    const newUrl = new URL(`/${subdomain}${pathname}`, req.url);
+    console.log("Rewriting to:", newUrl.toString());
 
     const rewrite = NextResponse.rewrite(newUrl);
     return handleAuthAndDashboard(req, rewrite);
