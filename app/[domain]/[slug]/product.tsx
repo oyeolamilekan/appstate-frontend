@@ -3,7 +3,7 @@
 import { Button, CustomSupense } from "@/components/ui";
 import { Gallery } from "@/components/ui/gallery";
 import { createPaymentLink, fetchProduct } from "@/endpoints/products";
-import { formatPrice, getSubdomain, redirectUrl } from "@/lib";
+import { formatPrice, redirectUrl } from "@/lib";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ShoppingBag } from "lucide-react";
 import Image from 'next/image';
