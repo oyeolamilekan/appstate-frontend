@@ -1,96 +1,137 @@
+// import { NextRequest, NextResponse } from "next/server";
+
+// export async function middleware(req: NextRequest) {
+//     console.log("Middleware triggered");
+//     console.log("NODE_ENV:", process.env.NODE_ENV);
+//     console.log("BASE_DOMAIN:", process.env.BASE_DOMAIN);
+
+//     const url = req.nextUrl;
+//     const pathname = url.pathname;
+//     const hostname = req.headers.get("host") || "";
+
+//     console.log("Request URL:", req.url);
+//     console.log("Pathname:", pathname);
+//     console.log("Hostname:", hostname);
+
+//     // Define the base domain
+//     const baseDomain = process.env.BASE_DOMAIN || "";
+//     if (!baseDomain) {
+//         console.error("BASE_DOMAIN is not set");
+//         return NextResponse.next();
+//     }
+
+//     // Check if we're on a subdomain
+//     const isSubdomain = hostname.endsWith(`.${baseDomain}`) && hostname !== `www.${baseDomain}`;
+//     console.log("Is subdomain:", isSubdomain);
+
+//     // Extract the subdomain if present
+//     let subdomain = "";
+//     if (isSubdomain) {
+//         subdomain = hostname.replace(`.${baseDomain}`, "");
+//     }
+//     console.log("Subdomain:", subdomain);
+
+//     // Check if the request is for a static file or API route
+//     if (pathname.match(/^\/(_next|api|static)/)) {
+//         console.log("Static or API route detected, passing through");
+//         return NextResponse.next();
+//     }
+
+//     // Handle subdomain requests
+//     if (isSubdomain) {
+//         console.log("Handling subdomain request");
+//         const newUrl = new URL(`/${subdomain}${pathname}`, `https://${baseDomain}`);
+//         console.log("Rewriting to:", newUrl.toString());
+//         return NextResponse.rewrite(newUrl);
+//     }
+
+//     // Handle main domain requests
+//     console.log("Handling main domain request");
+//     return handleAuthAndDashboard(req);
+// }
+
+// function handleAuthAndDashboard(req: NextRequest) {
+//     console.log("Handling auth and dashboard");
+//     const token = req.cookies.get("token")?.value;
+//     const pathname = req.nextUrl.pathname;
+
+//     console.log("Token present:", !!token);
+//     console.log("Current pathname:", pathname);
+
+//     if (!token && pathname.includes("/dashboard")) {
+//         console.log("Redirecting to sign-in");
+//         return NextResponse.redirect(new URL("/auth/sign-in", req.url));
+//     }
+
+//     if (token && pathname.includes("/auth")) {
+//         console.log("Redirecting to dashboard");
+//         return NextResponse.redirect(new URL("/dashboard/stores", req.url));
+//     }
+
+//     return NextResponse.next();
+// }
+
+// export const config = {
+//     matcher: [
+//         '/',
+//         '/:path*',
+//     ]
+// };
+
 import { NextRequest, NextResponse } from "next/server";
 
 export async function middleware(req: NextRequest) {
-    const url = req.nextUrl;
-    const pathname = url.pathname;
-    const hostname = req.headers.get("host") || "";
+  console.log("ENTERED");
 
-    console.log("Current hostname:", hostname);
-    console.log("Current pathname:", pathname);
-    console.log("NODE_ENV:", process.env.NODE_ENV);
+  const url = req.nextUrl;
+  const pathname = url.pathname;
+  const hostname = req.headers.get("host") || "";
 
-    // Define the base domain
-    let baseDomain: string;
-    if (process.env.NODE_ENV === "production") {
-        baseDomain = process.env.BASE_DOMAIN || "";
-        console.log("Production BASE_DOMAIN:", baseDomain);
-    } else {
-        baseDomain = "localhost:3000";
-        console.log("Development baseDomain:", baseDomain);
-    }
+  console.log("Request URL:", req.url);
+  console.log("Pathname:", pathname);
+  console.log("Hostname:", hostname);
 
+  let currentHost;
+  if (process.env.NODE_ENV === "production") {
+    const baseDomain = process.env.BASE_DOMAIN;
     if (!baseDomain) {
-        console.error("Base domain is not defined. Please set the BASE_DOMAIN environment variable in production.");
-        return NextResponse.next();
+      console.error("BASE_DOMAIN is not set in production");
+      return NextResponse.next();
     }
+    currentHost = hostname.replace(`.${baseDomain}`, "");
+  } else {
+    currentHost = hostname.split(":")[0].replace(".localhost", "");
+  }
 
-    // Extract the subdomain
-    const currentHost = hostname.replace(`.${baseDomain}`, "");
-    console.log("Current host (potential subdomain):", currentHost);
+  console.log("Current Host:", currentHost);
 
-    // Check if the request is for a static file or API route
-    if (pathname.match(/^\/(_next|api|static)/)) {
-        return NextResponse.next();
-    }
+  // If there's no currentHost, likely accessing the root domain, handle accordingly
+  if (!currentHost) {
+    console.log("No subdomain detected, serving root content");
+    return NextResponse.next();
+  }
 
-    // Check for [domain]/[slug]/.page route
-    const pageRouteMatch = pathname.match(/^\/([^/]+)\/([^/]+)\/\.page/);
-    if (pageRouteMatch) {
-        const [, domain, slug] = pageRouteMatch;
-        console.log("Page route match:", domain, slug);
-        return NextResponse.rewrite(new URL(`/${domain}/${slug}`, req.url));
-    }
+  // Check if the request is for a static file or API route
+  if (pathname.match(/^\/(_next|api|static)/)) {
+    console.log("Static or API route detected, passing through");
+    return NextResponse.next();
+  }
 
-    // If there's no subdomain or it's the base domain, continue
-    if (currentHost === hostname || hostname === baseDomain) {
-        console.log("No subdomain detected or base domain accessed");
-        return handleAuthAndDashboard(req);
-    }
+  // Here, you would typically fetch tenant-specific data based on the hostname
+  // For now, we'll just use the currentHost as the site_id
+  const site_id = currentHost;
 
-    // Derive tenant-specific data based on subdomain
-    const siteId = currentHost;
-    const mainDomain = `${currentHost}.customdomain.com`;
-    console.log("Detected siteId:", siteId);
-    console.log("Main domain:", mainDomain);
+  console.log("Site ID:", site_id);
 
-    let newUrl: URL;
-    if (hostname === mainDomain) {
-        newUrl = new URL(req.url);
-        console.log("Accessing through main domain, keeping current URL:", newUrl.toString());
-    } else {
-        newUrl = new URL(`${url.protocol}//${baseDomain}`);
-        newUrl.pathname = `/${siteId}${pathname}`;
-        console.log("Rewriting URL for subdomain:", newUrl.toString());
-    }
-
-    const rewrite = NextResponse.rewrite(newUrl);
-    return handleAuthAndDashboard(req, rewrite);
-}
-
-function handleAuthAndDashboard(req: NextRequest, response?: NextResponse) {
-    const token = req.cookies.get("token")?.value;
-    const pathname = req.nextUrl.pathname;
-
-    console.log("Handling auth and dashboard");
-    console.log("Token present:", !!token);
-    console.log("Current pathname:", pathname);
-
-    if (!token && pathname.includes("/dashboard")) {
-        console.log("Redirecting to sign-in");
-        return NextResponse.redirect(new URL("/auth/sign-in", req.url));
-    }
-
-    if (token && pathname.includes("/auth")) {
-        console.log("Redirecting to dashboard");
-        return NextResponse.redirect(new URL("/dashboard/stores", req.url));
-    }
-
-    return response || NextResponse.next();
+  // Rewrite the URL to the tenant-specific path, using the site_id
+  const newUrl = new URL(`/${site_id}${pathname}`, req.url);
+  console.log("Rewriting to:", newUrl.toString());
+  return NextResponse.rewrite(newUrl);
 }
 
 export const config = {
-    matcher: [
-        '/',
-        '/:path*',
-    ]
+  matcher: [
+    '/',
+    '/:path*',
+  ]
 };
