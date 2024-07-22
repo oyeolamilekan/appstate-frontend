@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: { domain: string } 
       siteName: pageData?.title,
       images: [
         {
-          url: pageData?.image_url,
+          url: pageData?.logo_url,
           width: 1200,
           height: 630,
         },
@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: { params: { domain: string } 
       card: 'summary_large_image',
       title: pageData?.title,
       description: pageData?.description,
-      images: [pageData?.image_url],
+      images: [pageData?.logo_url],
     }
   };
 }
