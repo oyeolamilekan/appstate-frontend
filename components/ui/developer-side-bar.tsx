@@ -85,7 +85,7 @@ export function DeveloperSideBar({ children }: PropTypes) {
             View Store
           </Button>}
           {mounted && <Button className="mx-5 my-5 space-y-8" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
-            {theme === 'dark' ? <SunDim /> : <MoonStar />} Switch Theme
+            {theme === 'dark' ? <SunDim className="mr-1" /> : <MoonStar className="mr-1" />} Switch Theme
           </Button>}
           <Button onClick={toggleConfirmLogout} className="mx-5 mb-5 space-x-2">
             <LogOut className="mr-1" /> Logout
