@@ -57,7 +57,7 @@ export default function TenantPage({ params }: { params: { domain: string } }) {
       >
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 my-5">
           {data?.pages.map((group: any, i: number) => group?.data?.map((product: any, key: number) => (
-            <Link key={key - i} href={`/${product.slug}`}>
+            <Link key={key - i} href={`/product/${product.slug}`}>
               <div
                 className="bg-sky-100 w-100 h-48 rounded"
                 style={{
