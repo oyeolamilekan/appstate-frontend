@@ -1,6 +1,6 @@
 "use client"
 
-import { fetchProducts } from '@/endpoints/products'
+import { fetchProducts } from '@/endpoints'
 import { useInfiniteScroll } from '@/hooks';
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { BoxIcon } from 'lucide-react';

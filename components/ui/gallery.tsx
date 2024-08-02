@@ -1,15 +1,17 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./button";
 import { useEffect, useRef, useState } from "react";
-import Image from 'next/image';
+import { ImagePreview } from "./image-preview";
 
 type GalleryProps = {
-  images: string[],
+  images: string[]
+  isRemoveButtonVisible?: boolean
+  onDelete?: (imageUrl: string) => void
 };
 
 const TRANSLATE_AMOUNT = 200;
 
-export function Gallery({ images }: GalleryProps) {
+export function Gallery({ images, isRemoveButtonVisible = false, onDelete }: GalleryProps) {
   const [translate, setTranslate] = useState(0);
   const [isLeftVisible, setIsLeftVisible] = useState(false);
   const [isRightVisible, setIsRightVisible] = useState(true);
@@ -37,19 +39,16 @@ export function Gallery({ images }: GalleryProps) {
         style={{ transform: `translateX(-${translate}px)` }}
       >
         {images.map((image, index) => (
-          <div
-            key={index}
-            className="relative w-[468px] h-[220px] md:w-[668px] md:h-[420px] flex-shrink-0 bg-gray-200 dark:bg-gray-700 rounded-lg"
-          >
-            <Image
-              src={image}
-              layout="fill"
-              objectFit="contain"
-              alt={`Gallery image ${index + 1}`}
-              className="object-cover rounded-lg"
+          <>
+            <ImagePreview
+              url={image}
+              key={index}
+              size={'large'}
+              type="url"
+              isRemoveButtonVisible={isRemoveButtonVisible}
+              onRemove={onDelete ? () => onDelete(image) : undefined}
             />
-          </div>
-
+          </>
         ))}
       </div>
       {isLeftVisible && (

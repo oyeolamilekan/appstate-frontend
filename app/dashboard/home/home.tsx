@@ -1,13 +1,10 @@
 "use client"
 
-import { DeveloperSideBar } from '@/components/ui'
 import React from 'react'
 import { useQueries } from "@tanstack/react-query";
 import { useSessionStorage } from '@/hooks';
 import { CURRENT_STORE } from '@/config/app';
-import { fetchProductCount } from '@/endpoints/products';
-import { toast } from 'sonner';
-import { fetchIntegrationCount } from '@/endpoints/integrations';
+import { fetchProductCount, fetchIntegrationCount } from '@/endpoints';
 
 export default function Home() {
   const { value } = useSessionStorage<{ name: string, public_id: string, slug: string }>(CURRENT_STORE);

@@ -1,14 +1,14 @@
 import React from 'react'
-import Integrations from './integrations'
+import Settings from './settings'
 
 export const metadata = {
-  title: "Appstate - Integrations"
+  title: "Appstate - Settings"
 }
 
 export default function Page() {
   return (
     <div>
-      <Integrations />
+      <Settings />
     </div>
   )
 }

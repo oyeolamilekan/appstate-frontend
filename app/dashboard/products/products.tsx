@@ -2,7 +2,7 @@
 
 import { Button, CustomSupense } from '@/components/ui'
 import { CURRENT_STORE } from '@/config/app';
-import { fetchProducts } from '@/endpoints/products'
+import { fetchProducts } from '@/endpoints'
 import { useInfiniteScroll, useSessionStorage } from '@/hooks';
 import { formatPrice } from '@/lib';
 import { useInfiniteQuery } from '@tanstack/react-query';
@@ -66,7 +66,7 @@ export default function Products() {
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 my-5">
           {data?.pages.map((group: any, i: number) => group?.data?.map((product: any, key: number) => (
-            <div className="cursor-pointer" key={key - i} onClick={() => router.push(`products/${product.slug}`)}>
+            <div className="cursor-pointer" key={key - i} onClick={() => router.push(`products/${product.public_id}`)}>
               <div
                 className="bg-sky-100 w-100 h-48 rounded"
                 style={{

@@ -1,19 +1,19 @@
 "use client";
 
-import { Button, CustomSupense, FileUploadButton, Form, Input, Modal } from "@/components/ui";
+import { Button, CustomSupense, FileUploadButton, Form, ImagePreview, Input, Modal, TextArea } from "@/components/ui";
 import { CURRENT_STORE } from "@/config/app";
-import { createStore, fetchStores } from "@/endpoints/stores";
-import { useSessionStorage } from "@/hooks";
+import { createStore, fetchStores } from "@/endpoints";
+import { useModals, useSessionStorage } from "@/hooks";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BoxIcon } from "lucide-react";
-import React, { useReducer, useState } from "react";
+import React, { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { TextArea } from "@/components/ui/textarea";
 import { redirectUrl } from "@/lib";
-import ImagePreview from "@/components/ui/image-preview";
 
 export default function Stores() {
+  const { modals, updateModals } = useModals();
+
   const { updateValue } = useSessionStorage(CURRENT_STORE);
 
   const queryClient = useQueryClient();
@@ -26,18 +26,6 @@ export default function Stores() {
     formState: { errors },
     reset,
   } = useForm();
-
-  const initState = { createStoreModal: false };
-
-  const [modals, updateModals] = useReducer(
-    (
-      prev: typeof initState,
-      next: Partial<typeof initState>,
-    ): typeof initState => {
-      return { ...prev, ...next };
-    },
-    initState,
-  );
 
   const { isLoading, isError, data } = useQuery({
     queryKey: ["stores"],

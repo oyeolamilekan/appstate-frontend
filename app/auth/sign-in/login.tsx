@@ -1,15 +1,15 @@
 "use client"
 
-import { authenticateUser } from '@/endpoints/auth'
+import { authenticateUser } from '@/endpoints'
 import { useMutation } from '@tanstack/react-query'
 import Link from 'next/link'
-import React, { useReducer } from 'react'
+import React from 'react'
 import { toast } from 'sonner'
 import { FieldValues, useForm } from "react-hook-form";
 import { Input, Form, Modal, Button } from '@/components/ui'
 import { APP_NAME } from '@/config/app'
 import { setCookie } from 'cookies-next'
-import { useSessionStorage } from '@/hooks'
+import { useModals, useSessionStorage } from '@/hooks'
 import { redirectUrl } from '@/lib'
 
 export default function Login() {
@@ -17,11 +17,7 @@ export default function Login() {
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm()
 
-  const initState = { successModal: false }
-
-  const [modals, updateModals] = useReducer((prev: typeof initState, next: Partial<typeof initState>): typeof initState => {
-    return { ...prev, ...next }
-  }, initState)
+  const { modals, updateModals } = useModals();
 
   const toggleSuccessModal = () => updateModals({ successModal: !modals.successModal })
 

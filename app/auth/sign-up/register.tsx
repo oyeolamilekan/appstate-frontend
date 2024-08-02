@@ -1,23 +1,20 @@
 "use client"
 
-import { createUser } from '@/endpoints/auth'
+import { createUser } from '@/endpoints'
 import { useMutation } from '@tanstack/react-query'
 import Link from 'next/link'
-import React, { useReducer, useState } from 'react'
+import React, { useState } from 'react'
 import { toast } from 'sonner'
 import { FieldValues, useForm } from "react-hook-form";
 import { Input, Form, Modal, Button } from '@/components/ui'
+import { useModals } from '@/hooks'
 
 export default function Register() {
   const { register, handleSubmit, formState: { errors }, reset } = useForm()
 
-  const initState = { successModal: false }
+  const { modals, updateModals } = useModals();
 
   const [isAcceptTerms, setTerms] = useState<boolean>(false)
-
-  const [modals, updateModals] = useReducer((prev: typeof initState, next: Partial<typeof initState>): typeof initState => {
-    return { ...prev, ...next }
-  }, initState)
 
   const toggleSuccessModal = () => updateModals({ successModal: !modals.successModal })
 

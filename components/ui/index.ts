@@ -10,3 +10,7 @@ export * from "./file-input"
 export * from "./image-preview";
 export * from "./custom-suspense";
 export * from "./success-animation"
+export * from "./logo"
+export * from "./image-preview"
+export * from "./gallery"
+export * from "./textarea"

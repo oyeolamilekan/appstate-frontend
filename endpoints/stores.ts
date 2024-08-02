@@ -16,8 +16,8 @@ export const fetchStore = async (storeSlug: string) => {
 }
 
 export const updateStore = async (body: any) => {
-  const slug = body.slug
-  delete body.slug;
-  const { data } = await axiosInstance.put(`stores/update_store/${slug}`, body);
+  const public_id = body.public_id
+  delete body.public_id;
+  const { data } = await axiosInstance.put(`stores/update_store/${public_id}`, body);
   return data
 }

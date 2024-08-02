@@ -1,16 +1,16 @@
 "use client"
 
 import { Input, Form, Modal, Button } from '@/components/ui'
-import React, { useMemo, useReducer, useRef } from 'react'
+import React, { useMemo, useRef } from 'react'
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createIntegration, deleteIntegration, fetchIntegrations } from '@/endpoints/integrations';
-import { useSessionStorage } from '@/hooks';
+import { createIntegration, deleteIntegration, fetchIntegrations } from '@/endpoints';
+import { useModals, useSessionStorage } from '@/hooks';
 import { CURRENT_STORE } from '@/config/app';
 import { FieldValues, useForm } from "react-hook-form";
 import { toast } from 'sonner';
 import { AlertOctagon } from 'lucide-react';
 import { capitalize } from '@/lib';
-import { FaGithub, FaStripe, FaStripeS } from 'react-icons/fa';
+import { FaGithub, FaStripeS } from 'react-icons/fa';
 
 interface DeleteIntegrationParams {
   storeSlug: string;
@@ -24,7 +24,7 @@ export default function Integrations() {
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm()
 
-  const initState = { createIntegrationModal: false, deleteIntegrationModal: false }
+  const { modals, updateModals } = useModals();
 
   const { value } = useSessionStorage<{ name: string, public_id: string, slug: string }>(CURRENT_STORE);
 
@@ -34,10 +34,6 @@ export default function Integrations() {
     enabled: value?.slug != null,
     retry: false,
   });
-
-  const [modals, updateModals] = useReducer((prev: typeof initState, next: Partial<typeof initState>): typeof initState => {
-    return { ...prev, ...next }
-  }, initState)
 
   const toggleIntegrationModal = () => updateModals({ createIntegrationModal: !modals.createIntegrationModal })
 

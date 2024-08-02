@@ -1,24 +1,20 @@
 "use client"
 
-import { Button, Input } from '@/components/ui'
-import { FileUploadButton } from '@/components/ui/file-input'
-import { TextArea } from '@/components/ui/textarea'
+import { Button, ImagePreview, Input, FileUploadButton, TextArea } from '@/components/ui'
 import React, { useState } from 'react'
 import { FieldValues, useForm } from 'react-hook-form'
 import { useSessionStorage } from "@/hooks";
 import { CURRENT_STORE } from '@/config/app'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { createProduct } from '@/endpoints/products'
+import { createProduct } from '@/endpoints'
 import { formatPrice, removeCommasAndConvertToNumber, validateGitHubRepoUrl } from '@/lib'
 import { useRouter } from 'next/navigation'
-import ImagePreview from '@/components/ui/image-preview'
-
 
 export default function Page() {
   const router = useRouter()
 
-  const { register, handleSubmit, formState: { errors }, reset } = useForm()
+  const { register, handleSubmit, formState: { errors } } = useForm()
 
   const { value } = useSessionStorage<{ name: string, public_id: string, slug: string }>(CURRENT_STORE);
 
@@ -130,7 +126,11 @@ export default function Page() {
               required: "Description is required",
             }}
           />
-          <ImagePreview file={selectedFile} onRemove={removeThumbnail} />
+          <ImagePreview 
+            file={selectedFile} 
+            onRemove={removeThumbnail}
+            isRemoveButtonVisible={false}
+           />
           <FileUploadButton
             onFileSelect={handleFileSelect}
             accept=".jpg,.png,.pdf"
@@ -146,6 +146,7 @@ export default function Page() {
               <ImagePreview
                 key={`${file.name}-${index}`}
                 file={file}
+                isRemoveButtonVisible={true}
                 onRemove={() => removeGalleryFile(file)}
               />
             ))}

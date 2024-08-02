@@ -1,17 +1,16 @@
 import React from 'react'
 import { useRouter } from 'next/navigation'
-import { Button } from '../ui'
-import Image from 'next/image';
+import { Button, Logo } from '../ui'
 
 export function Navigation() {
   const router = useRouter()
 
   return (
-    <nav className="sticky z-50 inset-x-0 top-0 py-3 border-b backdrop-blur-sm px-2 dark:border-gray-800">
+    <nav className="sticky z-50 inset-x-0 top-0 py-3 border-b backdrop-blur-md px-2 dark:border-gray-800">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-1">
         <a href="#" className="flex items-center space-x-1 rtl:space-x-reverse">
           <span className="self-center font-semibold whitespace-nowrap uppercase dark:text-gray-300">
-            <Image src ="/logo/logo.jpg" alt='' width={30} height={30} className='rounded-full'/>
+            <Logo />
           </span>
         </a>
         <div className='space-x-3'>
