@@ -220,7 +220,7 @@ const Page = ({ params: { slug } }: Props) => {
           </div>
         </>
       </Modal>
-      <Modal isShown={modals.changeProductLogoModal} onClose={toggleRemoveImageModal}>
+      <Modal isShown={modals.removeImageModal} onClose={toggleRemoveImageModal}>
         <>
           <p className='text-center'>Are you sure you want to remove this image?</p>
           <div className='flex flex-col md:flex-row md:space-x-4 md:space-y-0 space-y-2 mt-10'>
