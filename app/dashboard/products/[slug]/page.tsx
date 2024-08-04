@@ -111,7 +111,7 @@ const Page = ({ params: { slug } }: Props) => {
   const { isPending: isAddingImage, mutate: addImageAction } = useMutation({
     mutationFn: addImage,
     async onSuccess() {
-      toast.success("Image Successfully deleted.")
+      toast.success("Image Successfully added.")
       queryClient.invalidateQueries({ queryKey: ["product", slug] });
       setSelectedGalaryFile([])
       toggleAddImageModal()
