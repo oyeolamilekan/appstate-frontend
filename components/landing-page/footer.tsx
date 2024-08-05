@@ -5,7 +5,7 @@ export default function Footer() {
     <div className="text-center pb-9">
       <p className="dark:text-white">
         Built by
-        <span className="ml-1 font-semibold underline underline-offset-2">AppState</span>
+        <a className="ml-1 font-semibold underline underline-offset-2" href="https://me.withapp.xyz/" target="_blank">Oye Olalekan</a>
       </p>
     </div>
   )
