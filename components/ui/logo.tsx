@@ -5,7 +5,7 @@ import { useTheme } from 'next-themes';
 export function Logo() {
   const { resolvedTheme } = useTheme();
 
-  const logoSrc = resolvedTheme === 'dark' ? '/logo/LogoWhite.png' : '/logo/LogoBlack.png';
+  const logoSrc = resolvedTheme === 'dark' ? '/logo/LogoBlack.png' : '/logo/LogoWhite.png';
 
   return (
     <div className="p-[0.1rem] rounded-full">
