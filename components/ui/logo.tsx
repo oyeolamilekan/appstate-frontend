@@ -8,7 +8,7 @@ export function Logo() {
   const logoSrc = resolvedTheme === 'dark' ? '/logo/LogoWhite.png' : '/logo/LogoBlack.png';
 
   return (
-    <div className="p-[0.1rem] rounded-full bg-gray-200">
+    <div className="p-[0.1rem] rounded-full">
       <Image 
         src={logoSrc} 
         alt='Appstate Logo' 
