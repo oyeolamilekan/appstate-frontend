@@ -7,7 +7,7 @@ export function Logo() {
 
   return (
     <div className="p-[0.1rem] rounded-full">
-      <Image src={theme?.toLowerCase() === 'dark' ? `/logo/LogoWhite.png` : `/logo/LogoBlack.png`} alt='Logo' width={40} height={40} className='rounded-full'/>
+      <Image src={theme?.toLowerCase() === 'dark' || theme === null ? `/logo/LogoWhite.png` : `/logo/LogoBlack.png`} alt='Logo' width={40} height={40} className='rounded-full'/>
     </div>
   )
 }

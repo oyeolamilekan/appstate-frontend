@@ -4,13 +4,14 @@ import { Input, Form, Modal, Button } from '@/components/ui'
 import React, { useMemo, useRef } from 'react'
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createIntegration, deleteIntegration, fetchIntegrations } from '@/endpoints';
-import { useModals, useSessionStorage } from '@/hooks';
+import { useCopyToClipboard, useModals, useSessionStorage } from '@/hooks';
 import { CURRENT_STORE } from '@/config/app';
 import { FieldValues, useForm } from "react-hook-form";
 import { toast } from 'sonner';
 import { AlertOctagon } from 'lucide-react';
 import { capitalize } from '@/lib';
 import { FaGithub, FaStripeS } from 'react-icons/fa';
+import { BASE_URL } from '@/config/url';
 
 interface DeleteIntegrationParams {
   storeSlug: string;
@@ -18,6 +19,8 @@ interface DeleteIntegrationParams {
 }
 
 export default function Integrations() {
+  const [_, copy] = useCopyToClipboard()
+
   const queryClient = useQueryClient();
 
   const integrationId = useRef<string>('')
@@ -28,7 +31,7 @@ export default function Integrations() {
 
   const { value } = useSessionStorage<{ name: string, public_id: string, slug: string }>(CURRENT_STORE);
 
-  const { isLoading, isError, data } = useQuery({
+  const { isLoading, data } = useQuery({
     queryKey: ["integrations", value?.slug],
     queryFn: () => fetchIntegrations(value?.slug as string),
     enabled: value?.slug != null,
@@ -115,7 +118,9 @@ export default function Integrations() {
           <div className="text-center space-y-3">
             <h2 className="text-xl font-semibold text-secondary-dark dark:text-white">Github</h2>
             <p className="dark:text-white">Connect your github integration and automatically add customers to your repo.</p>
-            <Button size={'small'} className='my-5' onClick={() => github ? processDeleteIntegration('github') : processIntegration('github')} loading={isLoading}>{github ? 'Disconnect' : 'Connect'}</Button>
+            <div className="flex justify-center items-center my-16">
+              <Button size={'small'} onClick={() => github ? processDeleteIntegration('github') : processIntegration('github')} loading={isLoading}>{github ? 'Disconnect' : 'Connect'}</Button>
+            </div>
           </div>
         </div>
         <div className="flex flex-col px-5 py-10 rounded-2xl w-100 sm:col-span-3 lg:col-span-1 border dark:border-gray-700">
@@ -127,7 +132,13 @@ export default function Integrations() {
           <div className="text-center space-y-3">
             <h2 className="text-xl font-semibold text-secondary-dark dark:text-white">Stripe</h2>
             <p className="dark:text-white">Connect your stripe integration and start accepting payments.</p>
-            <Button size={'small'} className='my-5' onClick={() => stripe ? processDeleteIntegration('stripe') : processIntegration('stripe')} loading={isLoading}>{stripe ? 'Disconnect' : 'Connect'}</Button>
+            <div className="flex justify-center items-center my-16 space-x-5">
+              <Button size={'small'} onClick={() => stripe ? processDeleteIntegration('stripe') : processIntegration('stripe')} loading={isLoading}>{stripe ? 'Disconnect' : 'Connect'}</Button>
+              {stripe && <Button size={'small'} onClick={() => { 
+                copy(`${BASE_URL}merchants/stripe_webhook/${value?.slug}`)
+                toast.success("Webhook url copied.")
+              }}>Copy webhook url</Button>}
+            </div>
           </div>
         </div>
       </div>

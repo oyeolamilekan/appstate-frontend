@@ -3,13 +3,12 @@ import { useClickOutside, useSessionStorage, clearSessionStorage, useModals } fr
 import { CURRENT_STORE } from '@/config/app';
 import Link from 'next/link';
 import { getSubdomainUrl, pushToNewTab, redirectUrl } from '@/lib';
-import { Cog, HomeIcon, LayoutGrid, LogOut, Menu, MoonStar, ShoppingBag, SunDim } from 'lucide-react';
+import { Cog, HomeIcon, LayoutGrid, LogOut, Menu, MoonStar, Printer, ShoppingBag, SunDim } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { Button } from './button';
 import { deleteCookie } from 'cookies-next';
 import { Modal } from './modal';
-import { BsBasket } from 'react-icons/bs';
 
 export function DeveloperSideBar({ children }: PropTypes) {
 
@@ -75,17 +74,17 @@ export function DeveloperSideBar({ children }: PropTypes) {
                 </Link>
               </li>
               <li>
+                <Link href={`/dashboard/orders`} className={`${!value ? "cursor-not-allowed" : ""} flex flex-row gap-2 w-full dark:text-white items-center hover:bg-gray-200 dark:hover:bg-neutral-800 ${checkIfActive("/dashboard/orders") ? "bg-gray-200 dark:bg-neutral-800 font-semibold" : ""} hover:font-semibold rounded px-3 py-2 transition-all duration-200`} onClick={(e) => { if (!value) e.preventDefault() }}>
+                  <Printer strokeWidth={checkIfActive("/dashboard/orders") ? 2 : 1.5} />
+                  <span className="text-[0.9rem]">Orders</span>
+                </Link>
+              </li>
+              <li>
                 <Link href={`/dashboard/settings`} className={`${!value ? "cursor-not-allowed" : ""} flex flex-row gap-2 w-full dark:text-white items-center hover:bg-gray-200 dark:hover:bg-neutral-800 ${checkIfActive("/dashboard/settings") ? "bg-gray-200 dark:bg-neutral-800 font-semibold" : ""} hover:font-semibold rounded px-3 py-2 transition-all duration-200`} onClick={(e) => { if (!value) e.preventDefault() }}>
                   <Cog strokeWidth={checkIfActive("/dashboard/settings") ? 2 : 1.5} />
                   <span className="text-[0.9rem]">Store Settings</span>
                 </Link>
               </li>
-              {/* <li>
-                <Link href={`/dashboard/orders`} className={`${!value ? "cursor-not-allowed" : ""} flex flex-row gap-2 w-full dark:text-white items-center hover:bg-gray-200 dark:hover:bg-neutral-800 ${checkIfActive("/dashboard/orders") ? "bg-gray-200 dark:bg-neutral-800 font-semibold" : ""} hover:font-semibold rounded px-3 py-2 transition-all duration-200`} onClick={(e) => { if (!value) e.preventDefault() }}>
-                  <BsBasket strokeWidth={checkIfActive("/dashboard/orders") ? 2 : 1.5} />
-                  <span className="text-[0.9rem]">Orders</span>
-                </Link>
-              </li> */}
             </ul>
           </div>
         </div>
