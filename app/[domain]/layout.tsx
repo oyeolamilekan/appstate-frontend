@@ -6,8 +6,18 @@ import Link from "next/link";
 import Image from 'next/image'
 
 async function fetchSeoData(subdomain: string) {
-  const response = await fetch(`${BASE_URL}stores/fetch_store/${subdomain}`);
-  const data = await response.json();
+  const response = await fetch(
+    `${BASE_URL}projects/fetch_project/${encodeURIComponent(subdomain)}`,
+    {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        // Add any auth headers if needed
+      },
+      cache: 'no-cache', // or 'default' if you want to use browser cache
+      credentials: 'same-origin', // or 'include' for cross-origin requests
+    }
+  );  const data = await response.json();
   return data.data;
 }
 
