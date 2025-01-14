@@ -1,6 +1,7 @@
 import React from 'react'
 import { useRouter } from 'next/navigation'
 import { Button, Logo } from '../ui'
+import { pushToNewTab } from '@/lib'
 
 export function Navigation() {
   const router = useRouter()
@@ -14,8 +15,8 @@ export function Navigation() {
           </span>
         </a>
         <div className='space-x-3'>
-          <Button variant={'outline'} size={'small'} onClick={() => router.push("/auth/sign-in")}>Sign In</Button>
-          <Button variant={'dark'} size={'small'} onClick={() => router.push("/auth/sign-up")}>Sign Up</Button>
+          <Button variant={'outline'} size={'small'} onClick={() => pushToNewTab("https://github.com/oyeolamilekan/appstate-frontend")}>View Frontend Code</Button>
+          <Button variant={'dark'} size={'small'} onClick={() => pushToNewTab("https://github.com/oyeolamilekan/appstate-backend")}>View Backend Code</Button>
         </div>
       </div>
     </nav>
