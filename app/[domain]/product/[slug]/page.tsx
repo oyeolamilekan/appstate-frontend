@@ -10,6 +10,7 @@ async function fetchSeoData(subdomain: string) {
 }
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  return {}
   const pageData = await fetchSeoData(params.slug as string);
   const headersList = headers();
   const hostname = headersList.get('host') || '';

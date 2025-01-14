@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from 'next/image'
 
 async function fetchSeoData(subdomain: string) {
+  return {}
   const response = await fetch(
     `${BASE_URL}projects/fetch_project/${encodeURIComponent(subdomain)}`,
     {
@@ -22,6 +23,7 @@ async function fetchSeoData(subdomain: string) {
 }
 
 export async function generateMetadata({ params }: { params: { domain: string } }): Promise<Metadata> {
+  return {}
   const pageData = await fetchSeoData(params.domain as string);
   const headersList = headers();
   const hostname = headersList.get('host') || '';
